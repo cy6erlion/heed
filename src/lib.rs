@@ -2,7 +2,7 @@
 /// Solana heed
 pub mod solana;
 /// Decentralized networks
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum DecentNet {
     Solana,
 }
