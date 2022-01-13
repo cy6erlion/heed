@@ -1,14 +1,16 @@
 //! Pay attention to decentralized entities.
-/// Solana heed
 
 use async_trait::async_trait;
 use std::ops::Add;
+
+pub mod ethereum;
 pub mod solana;
 
 /// Decentralized networks
 #[derive(Debug, PartialEq)]
 pub enum DecentNet {
     Solana,
+    Ethereum,
 }
 
 /// Identifies the state of a decentralized network
@@ -19,7 +21,6 @@ pub struct DecentNetState {
 
 #[async_trait]
 /// For implementing heeding on a network
-pub trait Heeder {
 pub trait Heeder<A: Add> {
     /// network specific, heed method.
     async fn heed(&self, to_heed: Vec<String>) -> Vec<DecentEntity<A>>;
@@ -38,7 +39,6 @@ pub struct DecentEntity<A: Add> {
 }
 
 /// Convert Solana Account to Entity
-impl From<solana_sdk::account::Account> for DecentEntity {
 impl From<solana_sdk::account::Account> for DecentEntity<u64> {
     fn from(account: solana_sdk::account::Account) -> Self {
         DecentEntity {
