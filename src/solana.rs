@@ -59,31 +59,33 @@ impl Heeder<u64> for SolanaHeed {
 mod tests {
     use super::*;
     use crate::DecentNet;
+    use smol;
 
     #[test]
     fn test_solana_heed() {
-        let solana_heeder: SolanaHeed = Default::default();
-        let to_heed = vec![String::from("F1xq9yBeB8otmiWhza9rmrnjTVpsZNuqS2GvAS4QUiwB")];
-        let entities = solana_heeder.heed(to_heed);
+        smol::block_on(async {
+            let solana_heeder: SolanaHeed = Default::default();
+            let to_heed = vec![String::from("F1xq9yBeB8otmiWhza9rmrnjTVpsZNuqS2GvAS4QUiwB")];
+            let entities = solana_heeder.heed(to_heed).await;
 
-        assert_eq!(entities[0].network, DecentNet::Solana);
-        assert_eq!(
-            entities[0].location,
-            "F1xq9yBeB8otmiWhza9rmrnjTVpsZNuqS2GvAS4QUiwB".to_string()
-        );
+            assert_eq!(entities[0].network, DecentNet::Solana);
+            assert_eq!(
+                entities[0].location,
+                "F1xq9yBeB8otmiWhza9rmrnjTVpsZNuqS2GvAS4QUiwB".to_string()
+            );
 
-        match entities[0].amount {
-            Some(amount) => assert!(true),
-            None => panic!("Solana amount cannot be None"),
-        }
-
-        match &entities[0].net_state.id {
-            Some(id) => {
-                println!("{}", id);
-                // Base64 ecoded SHA256 (6 bits per char)
-                assert_eq!(id.len(), 44)
+            match entities[0].amount {
+                Some(amount) => assert!(true),
+                None => panic!("Solana amount cannot be None"),
             }
-            None => panic!("Solana entity network state (lates block) cannot be None"),
-        }
+
+            match &entities[0].net_state.id {
+                Some(id) => {
+                    // Base64 ecoded SHA256 (6 bits per char)
+                    assert_eq!(id.len(), 44)
+                }
+                None => panic!("Solana entity network state (lates block) cannot be None"),
+            }
+        })
     }
 }
