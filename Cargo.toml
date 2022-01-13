@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+# Type erasure for async trait methods 
+async-trait = "0.1.52"
 # Ethereum
 web3 = "0.17.0"
 

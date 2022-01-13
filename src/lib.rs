@@ -1,5 +1,6 @@
 //! Pay attention to decentralized entities.
 /// Solana heed
+use async_trait::async_trait;
 pub mod solana;
 /// Decentralized networks
 #[derive(Debug, PartialEq)]
@@ -11,10 +12,12 @@ pub enum DecentNet {
 pub struct DecentNetState {
     id: Option<String>,
 }
+#[async_trait]
 /// For implementing heeding on a network
 pub trait Heeder {
     /// network specific, heed method.
     fn heed(&self, to_heed: Vec<String>) -> Vec<DecentEntity>;
+    async fn heed(&self, to_heed: Vec<String>) -> Vec<DecentEntity<A>>;
 }
 /// A decentralized entity
 pub struct DecentEntity {
