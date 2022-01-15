@@ -17,3 +17,6 @@ solana-sdk = "1.9.2"
 [dev-dependencies]
 # A small and fast async runtime
 smol = "1.2.5"
+
+#  Compatibility adapter between tokio and futures 
+async-compat = "0.2.1"
