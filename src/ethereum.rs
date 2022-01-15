@@ -60,7 +60,33 @@ impl Heeder<U256> for EthereumHeed {
 mod tests {
     use super::*;
     use crate::DecentNet;
+    use async_compat::Compat;
+    use smol;
 
     #[test]
-    fn test_ethereum_heed() {}
+    fn test_ethereum_heed() {
+        smol::block_on(Compat::new(async {
+            let ethereum_heeder: EthereumHeed = Default::default();
+            let to_heed = vec![String::from("0x9931e74Ab442D144a1053000349d987ddC8594DE")];
+            let entities = ethereum_heeder.heed(to_heed).await;
+
+            assert_eq!(entities[0].network, DecentNet::Ethereum);
+            assert_eq!(
+                entities[0].location,
+                "0x9931e74Ab442D144a1053000349d987ddC8594DE".to_string()
+            );
+
+            match entities[0].amount {
+                Some(_amount) => assert!(true),
+                None => panic!("Ethereum amount cannot be None"),
+            }
+
+            match &entities[0].net_state.id {
+                Some(id) => {
+                    assert_eq!(id.len(), 8)
+                }
+                None => panic!("Ethereum entity network state (lates block) cannot be None"),
+            }
+        }))
+    }
 }
