@@ -2,9 +2,10 @@
 
 use crate::{DecentEntity, DecentNet, DecentNetState, Heeder};
 use async_trait::async_trait;
+use std::str::FromStr;
 use web3::api::Web3;
 use web3::transports::http::Http;
-use web3::types::{BlockNumber, H160, U256};
+use web3::types::{Address, BlockNumber, U256};
 
 /// Represents the state of the Ethereum blockchain
 pub struct EthereumState;
@@ -24,7 +25,7 @@ impl Default for EthereumHeed {
 
 #[async_trait]
 impl Heeder<U256> for EthereumHeed {
-    /// heed solana
+    /// heed ethereum
     async fn heed(&self, to_heed: Vec<String>) -> Vec<DecentEntity<U256>> {
         let transport = Http::new(&self.rpc_url).unwrap();
         let rpc_client = Web3::new(transport);
@@ -32,7 +33,8 @@ impl Heeder<U256> for EthereumHeed {
         let mut entities: Vec<DecentEntity<U256>> = vec![];
 
         for i in 0..to_heed.len() {
-            let address: H160 = H160::from_slice(to_heed[i].as_bytes());
+            let address = Address::from_str(&to_heed[i]).unwrap();
+
             let amount = rpc_client
                 .eth()
                 .balance(address, Some(BlockNumber::Number(block_number)))
